@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.35806.103 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shader-Cache-Remover", "Shader-Cache-Remover.csproj", "{FA9ED0B5-2C96-46C7-A24A-DA33E0239C4F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA9ED0B5-2C96-46C7-A24A-DA33E0239C4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA9ED0B5-2C96-46C7-A24A-DA33E0239C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA9ED0B5-2C96-46C7-A24A-DA33E0239C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA9ED0B5-2C96-46C7-A24A-DA33E0239C4F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C8C921A9-7B37-44E3-BE02-4F5690BE9425}
+	EndGlobalSection
+EndGlobal
