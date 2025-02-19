@@ -20,24 +20,27 @@
                 new List<string> { "AMD", "DxcCache" },
                 new List<string> { "AMD", "OglCache" },
                 new List<string> { "AMD", "VkCache" },
-                new List<string> { "AMD", "DX9Cache" }
-            };
+                new List<string> { "AMD", "DX9Cache" },
+                new List<string> { "LocalLow", "NVIDIA", "PerDriverVersion", "DXcache" },
+                new List<string> { "ov", "cache " },
+                new List<string> { "NVIDIA", "OptixCache " },
 
+            };
             try
             {
-                foreach (var pathList in directories)
+                foreach (List<string> pathList in directories)
                 {
+               
                     string fullPath = pathList.Aggregate(baseDirectory, (current, subdir) => Path.Combine(current, subdir));
 
 
                     if (Directory.Exists(fullPath))
                     {
-                        Console.WriteLine($"Directory exists: {fullPath}");
 
                         try
                         {
 
-                            foreach (var file in Directory.GetFiles(fullPath))
+                            foreach (string file in Directory.GetFiles(fullPath))
                             {
                                 try
                                 {
@@ -46,22 +49,12 @@
                                 }
                                 catch (IOException)
                                 {
-                                    Console.WriteLine($"Could not delete file {file} because it is being used by another process. Skipping...");
+                                    
+                                    Console.WriteLine($"Could not delete file (Remove Manually) {file} Skipping... ");
                                 }
                             }
 
-                            foreach (var subDir in Directory.GetDirectories(fullPath))
-                            {
-                                try
-                                {
-                                    Directory.Delete(subDir, true);
-                                    Console.WriteLine($"Deleted subdirectory: {subDir}");
-                                }
-                                catch (IOException)
-                                {
-                                    Console.WriteLine($"Could not delete subdirectory {subDir} because it is being used by another process. Skipping...");
-                                }
-                            }
+                            
 
                         }
                         catch (IOException ex)
@@ -69,13 +62,8 @@
                             Console.WriteLine($"Could not delete contents of {fullPath}: {ex.Message}");
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"Directory not found: {fullPath}");
-                    }
+                   
                 }
-
-
                 string roamingBaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
                 List<List<string>> roamingDirectories = new List<List<string>> {
@@ -84,19 +72,10 @@
                     new List<string> { "Microsoft", "CLR_v4.0" }
                 };
 
-                foreach (var pathList in roamingDirectories)
+                foreach (List<string> pathList in roamingDirectories)
                 {
                     string fullPath = pathList.Aggregate(roamingBaseDirectory, (current, subdir) => Path.Combine(current, subdir));
-
-
-                    if (Directory.Exists(fullPath))
-                    {
-                        Console.WriteLine($"Roaming directory exists: {fullPath}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Roaming directory not found: {fullPath}");
-                    }
+                  
                 }
             }
             catch (UnauthorizedAccessException ex)
