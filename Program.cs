@@ -1,34 +1,45 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
-namespace Shader_Cache_Remover;
-
-class Program
+namespace Shader_Cache_Remover
 {
-    static void Main(string[] args)
+    class Program
     {
-
-        Console.WriteLine("Shader Cache remover\n\nAll temporary shader cache files from graphics drivers and game engines will be removed.");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("\nATTENTION: Whilst removing the cache is usually safe this action can not be reversed!");
-        Console.ResetColor();
-        Console.Write("\nPress enter to clear the cache.");
-
-
-        while (true)
+        static void Main(string[] args)
         {
-            ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+            Console.WriteLine("Shader Cache Remover\n");
+            Console.WriteLine("All temporary shader cache files from graphics drivers and game engines will be removed.");
 
-            if (key.Key == ConsoleKey.Enter)
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nATTENTION: While removing the cache is usually safe, this action cannot be reversed!");
+            Console.ResetColor();
+
+            Console.Write("\nPress Enter to begin cleanup or Esc to exit...");
+
+            while (true)
             {
-                Console.Clear();
-                Cleaner.BeginClean();
-                Console.Write("\nComplete.");
-              
+                ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Starting cleanup...\n");
+                    Cleaner.BeginClean();
+                    Console.WriteLine("\nCleanup complete.");
+                    break;
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine("\nOperation cancelled. Exiting...");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid key. Press Enter to clean or Esc to exit.");
+                }
             }
-            else
-                Console.WriteLine("\nPress enter to begin.");
 
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
         }
-
     }
 }
