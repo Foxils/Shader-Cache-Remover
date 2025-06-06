@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Shader_Cache_Remover
 {
@@ -11,8 +12,10 @@ namespace Shader_Cache_Remover
         {
             string baseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string roamingBaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            StringBuilder logBuilder = new StringBuilder();
 
-            // Local cache 
+            logBuilder.AppendLine($"--- Shader Cache Cleanup Started: {DateTime.Now} ---\n");
+
             List<List<string>> directories = new List<List<string>>
             {
                 new List<string> { "NVIDIA", "DXCache" },
@@ -32,7 +35,6 @@ namespace Shader_Cache_Remover
                 new List<string> { "ov", "cache" }
             };
 
-            // Roaming cache 
             List<List<string>> roamingDirectories = new List<List<string>>
             {
                 new List<string> { "Unreal Engine", "Common", "DerivedDataCache" },
@@ -42,39 +44,43 @@ namespace Shader_Cache_Remover
 
             try
             {
-                //  local directories
                 foreach (List<string> pathList in directories)
                 {
                     string fullPath = pathList.Aggregate(baseDirectory, Path.Combine);
-
                     if (Directory.Exists(fullPath))
                     {
-                        DeleteFilesInDirectory(fullPath);
+                        DeleteFilesInDirectory(fullPath, logBuilder);
                     }
                 }
 
-                // roaming directories
                 foreach (List<string> pathList in roamingDirectories)
                 {
                     string fullPath = pathList.Aggregate(roamingBaseDirectory, Path.Combine);
-
                     if (Directory.Exists(fullPath))
                     {
-                        DeleteFilesInDirectory(fullPath);
+                        DeleteFilesInDirectory(fullPath, logBuilder);
                     }
                 }
+
+                logBuilder.AppendLine("\n--- Cleanup Finished Successfully ---\n");
             }
             catch (UnauthorizedAccessException ex)
             {
+                logBuilder.AppendLine($"Access denied: {ex.Message}");
                 Console.WriteLine($"Access denied (run as Administrator?): {ex.Message}");
             }
             catch (Exception ex)
             {
+                logBuilder.AppendLine($"Unexpected error: {ex.Message}");
                 Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
+            finally
+            {
+                WriteLogToFile(logBuilder.ToString());
             }
         }
 
-        private static void DeleteFilesInDirectory(string directoryPath)
+        private static void DeleteFilesInDirectory(string directoryPath, StringBuilder logBuilder)
         {
             try
             {
@@ -84,18 +90,35 @@ namespace Shader_Cache_Remover
                 {
                     try
                     {
-                        File.Delete(file);
-                        Console.WriteLine($"Deleted file: {file}");
+                    File.Delete(file);
+                    logBuilder.AppendLine($"Deleted: {file}");
+                    Console.WriteLine($"Deleted file: {file}");
                     }
                     catch (IOException)
                     {
-                        Console.WriteLine($"Could not delete file (in use or protected): {file}");
+                    logBuilder.AppendLine($"Failed to delete (locked): {file}");
+                    Console.WriteLine($"Could not delete file (in use or protected): {file}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to process directory: {directoryPath}. Error: {ex.Message}");
+            logBuilder.AppendLine($"Failed to process directory {directoryPath}: {ex.Message}");
+            Console.WriteLine($"Error in directory {directoryPath}: {ex.Message}");
+            }
+        }
+
+        private static void WriteLogToFile(string logContent)
+        {
+            try
+            {
+            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shader_cache_log.txt");
+            File.AppendAllText(logPath, logContent);
+            Console.WriteLine($"\nLog written to: {logPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to write log file: {ex.Message}");
             }
         }
     }
